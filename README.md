@@ -25,4 +25,8 @@ Our project seeks to use the python module _tweepy_ to access the Twitter API an
 
 ## tweepy Module
 
-The tweepy module is used to access the twitter API and begin the process of data mining.
+The tweepy module is used to access the twitter API and begin the process of data mining. This module is important to our code because it will provide access to the tweets necessary to perform our analysis. We will use the _tweepy.API_ class, which serves as a wrapper to the twitter API and gives us access to the desired data stored within twitter. 
+
+### API Authorization
+
+Before being able to search through the tweets that we want, we must first get authorized access to the twitter API for our users. We have to register the module to twitter and then use the consumer key given to us by twitter to use the tweepy module in order to
