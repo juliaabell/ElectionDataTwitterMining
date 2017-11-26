@@ -29,4 +29,8 @@ The tweepy module is used to access the twitter API and begin the process of dat
 
 ### API Authorization
 
-Before being able to search through the tweets that we want, we must first get authorized access to the twitter API for our users. We have to register the module to twitter and then use the consumer key given to us by twitter to use the tweepy module in order to
+Before being able to search through the tweets that we want, we must first get authorized access to the twitter API for our users. The _OAuth_ function of tweepy allows us to get access to the code. We have to register the module to twitter and then use the consumer key given to us by twitter to use the tweepy module to allow our module to operate and collect data. After receiving a token, we then have access to the API and data stored within twitter. To learn more about API authorization in tweepy follow this [link](http://tweepy.readthedocs.io/en/v3.5.0/auth_tutorial.html)
+
+### tweepy Stream and tweepy.search
+
+The tweepy module has the capability to stream tweets and produce a JSON dataset that includes several parameters. This can be used to return data for tweets including the partisan hashtags provided as input. The data returned through tweepy stream will be used in the rest of our analysis. While just a regular stream will return all available tweets for a certain time, we need something more specific for our hashtags. The tweepy module provides a search function which will help us narrow down tweets that only contain a hashtag within their text.
