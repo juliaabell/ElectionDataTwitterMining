@@ -23,3 +23,6 @@ Twitter is a widely used social media website that gives a platform to users acr
 
 Our project seeks to use the python module _tweepy_ to access the Twitter API and find the geographic dispersion of tweets using partisan political hashtags. Since partisan sentiment is often concentrated in different geographic regions, producing a visualization of the dispersion of tweets using each hashtag could prove intersting. In addition, our code will seek to geotag those messages that are not geotagged by the user.
 
+## tweepy Module
+
+The tweepy module is used to access the twitter API and begin the process of data mining.
