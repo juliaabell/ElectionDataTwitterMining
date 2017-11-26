@@ -42,3 +42,5 @@ A tweet is geotagged only when a user allows it to be, therefore many tweets do 
 ### Geovisualization of Data
 
 Our code will aim to create a visualization of the data in the form of a map showing the dispersion of partisan tweets by geographic location. These maps will be created using the basemap functionality of matplotlib, and will be an important utilization of the geographic data that has been created in the other parts of our code.
+
+## UML Diagram and Implementation
