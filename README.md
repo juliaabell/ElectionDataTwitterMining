@@ -44,3 +44,18 @@ A tweet is geotagged only when a user allows it to be, therefore many tweets do 
 Our code will aim to create a visualization of the data in the form of a map showing the dispersion of partisan tweets by geographic location. These maps will be created using the basemap functionality of matplotlib, and will be an important utilization of the geographic data that has been created in the other parts of our code.
 
 ## UML Diagram and Implementation
+
+## Project Input & Output
+
+As a whole our project seeks to analyze partisan sentiment on twitter by using the geospatial data that is retrievable through the twitter API. In order to create our final product, we require some input:
+
+* Twitter API Authorization token
+* List of hashtags to be used (#Hillaryforprison, #LoveTrumpsHate, #NotMyPresident, #PresidentTrump, #PresidentClinton, #MakeAmericaGreatAgain/#MAGA)
+
+With these two inputs, we will be able to create our output:
+
+* A corrected geodataset of tweets (All those that could not be tagged will be deleted).
+* Geovisualization of data using shapely, matplotlib, and basemap.
+* Comparison of twitter data to 2016 election maps for user analysis.
+
+
