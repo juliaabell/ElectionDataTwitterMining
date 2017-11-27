@@ -45,6 +45,8 @@ Our code will aim to create a visualization of the data in the form of a map sho
 
 ## UML Diagram and Implementation
 
+![UML Diagram](/documentation/uml.png)
+
 ## Project Input & Output
 
 As a whole our project seeks to analyze partisan sentiment on twitter by using the geospatial data that is retrievable through the twitter API. In order to create our final product, we require some input:
