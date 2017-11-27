@@ -47,6 +47,17 @@ Our code will aim to create a visualization of the data in the form of a map sho
 
 ![UML Diagram](/documentation/uml.png)
 
+Tweepy is a python library used for accessing the twitter API. This will allow us to scrape the information that we want from Twitter. From  Tweepy, we will use We will use StreamListener and Stream. Tweepy will allow us to download the tweets that we want and will allow us to access the tweet's metatdata such as the locations where these tweets were written.
+
+Tweet will contain the tweets that have been downloaded from twitter via the Tweepy module. Each tweet will have a status which is the string/words in the tweet (including the hashtag, which is what we are most interested in), as well as geographic information about where the tweet originated. 
+
+GeoStreamListener is composed of these tweets and allows us to obtain the geographic location of where the tweet was created to create a geodataset of tweets. Any tweets that we haved ownloaded that cannot be tagged will be dropped from this dataset as we need location for this project.
+
+TweetGeocoder will allow us to obtain the coordinates of/geocode each tweet from the metadata/address of the tweets that we obtain. We will then be able to use these coordinates (instead of the location format given by twitter) to place the locations of these tweets on a map for the data visualization portion of this project. 
+
+GeoTweetView will take the location of the selected tweets and display them in their correct location on a map of the U.S. This map will be partitioned by state, so we can easily see which state each tweet came from. This graphic can be used to compare the political affilition of each state with the tweets that are being tweeted by its citizens. 
+
+
 ## Project Input & Output
 
 As a whole our project seeks to analyze partisan sentiment on twitter by using the geospatial data that is retrievable through the twitter API. In order to create our final product, we require some input:
