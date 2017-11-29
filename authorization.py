@@ -10,3 +10,11 @@ auth = OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_secret)
 
 api = tweepy.API(auth)
+
+class GeoStreamListener(StreamListener):
+    hashtags = {'red': ["#Hillaryforprison", "#PresidentTrump", "#MakeAmericaGreatAgain", "#MAGA"], 'blue': ["#LoveTrumpsHate", "#NotMyPresident", "#PresidentClinton"]}
+    def on_status(self, status):
+        print(status.text)
+    
+    def collect_tweets(self):
+        return None #Will be revised later
