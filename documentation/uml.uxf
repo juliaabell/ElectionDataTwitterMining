@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?><diagram program="umlet" version="13.3">
-  <zoom_level>10</zoom_level>
+  <zoom_level>8</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>160</x>
-      <y>70</y>
-      <w>150</w>
-      <h>50</h>
+      <x>152</x>
+      <y>72</y>
+      <w>120</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>/StreamListener/
 --
@@ -16,29 +16,29 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>160</x>
-      <y>240</y>
-      <w>270</w>
-      <h>100</h>
+      <x>152</x>
+      <y>184</y>
+      <w>232</w>
+      <h>112</h>
     </coordinates>
     <panel_attributes>GeoStreamListener
 --
 - partitions : [Tweet -&gt; Bool]
 - partioned_tweets : [[Tweet]]
 --
-- __init__(partitions : [Tweet -&gt; Bool])
-+ on_status(status)
-+ collect_tweets() : 
-</panel_attributes>
+- geocode_tweet(status)
++ __init__(partitions : [Tweet -&gt; Bool])
++ on_status(status) # Tweepy function
++ collect_tweets() : [[Tweet]]</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>150</x>
-      <y>40</y>
-      <w>460</w>
-      <h>110</h>
+      <x>144</x>
+      <y>48</y>
+      <w>152</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>Defined by Tweepy
 </panel_attributes>
@@ -47,43 +47,21 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>220</x>
-      <y>110</y>
-      <w>30</w>
-      <h>150</h>
+      <x>200</x>
+      <y>104</y>
+      <w>24</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;130.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>430</x>
-      <y>80</y>
-      <w>100</w>
-      <h>30</h>
-    </coordinates>
-    <panel_attributes>Stream</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>300</x>
-      <y>80</y>
-      <w>150</w>
-      <h>30</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>130.0;10.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>540</x>
-      <y>160</y>
-      <w>180</w>
-      <h>70</h>
+      <x>328</x>
+      <y>64</y>
+      <w>144</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>Tweet
 --
@@ -94,21 +72,21 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>420</x>
-      <y>200</y>
-      <w>140</w>
-      <h>110</h>
+      <x>296</x>
+      <y>96</y>
+      <w>48</w>
+      <h>104</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;90.0;120.0;10.0</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;110.0;40.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>160</x>
-      <y>440</y>
-      <w>320</w>
-      <h>60</h>
+      <x>528</x>
+      <y>72</y>
+      <w>256</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>GeoTweetView
 --
@@ -118,49 +96,42 @@
     <additional_attributes/>
   </element>
   <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>230</x>
-      <y>330</y>
-      <w>30</w>
-      <h>130</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;110.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>550</x>
-      <y>330</y>
-      <w>200</w>
-      <h>50</h>
+      <x>464</x>
+      <y>192</y>
+      <w>272</w>
+      <h>80</h>
     </coordinates>
-    <panel_attributes>/TweetGeocoder/
+    <panel_attributes>GeoTweetCollection
 --
-+Geocode(Tweet) : coord</panel_attributes>
+- partioned_tweets : Dict (String -&gt; [Tweet])
+- tag_partitions: Dict (String -&gt; [String])
+--
++ __init__(tag_partitions)
++ get_partitions : Dict (String -&gt; Tweet)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>420</x>
-      <y>280</y>
-      <w>150</w>
-      <h>90</h>
+      <x>376</x>
+      <y>208</y>
+      <w>104</w>
+      <h>24</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;130.0;70.0</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>110.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
-    <id>UMLNote</id>
+    <id>Relation</id>
     <coordinates>
-      <x>530</x>
-      <y>290</y>
-      <w>300</w>
-      <h>100</h>
+      <x>608</x>
+      <y>112</y>
+      <w>24</w>
+      <h>96</h>
     </coordinates>
-    <panel_attributes>Geocoding abstract class could have many concrete implementations</panel_attributes>
-    <additional_attributes/>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
   </element>
 </diagram>
