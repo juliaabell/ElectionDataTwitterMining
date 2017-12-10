@@ -8,7 +8,7 @@ def geocode_tweets(tweet, fil):
     e = geograpy.Extractor(text=tweet)
     e.find_entities()
     place_name = e.places[0]
-    geolocator = Bing()
+    geolocator = Nomanatim()
     location = geolocator.geocode(place_name)
     with open(fil, 'r+') as tweet_file:
         data = json.load(tweet_file)
