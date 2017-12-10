@@ -36,7 +36,7 @@ class GeoStreamListener(tweepy.StreamListener):
         if len(self._tweet_collection) < self._max_count:
             if status.place is not None:
                 print 'found geotagged tweet'
-                tweet = Tweet(status.text, status.place.bounding_box.corner)
+                tweet = Tweet(status.text, status.place.bounding_box.corner())
             else:
                 tweet = Tweet(status.text, None)
 
@@ -137,7 +137,7 @@ auth.set_access_token(access_token, access_secret)
 
 api = tweepy.API(auth)
  
-partioner = GeoStreamPartioner({'Blue': ['#ManchesterDerby'], 'Red': ['#humanrightsday']}, 10, Nominatim())
+partioner = GeoStreamPartioner({'Blue': ['#ManchesterDerby'], 'Red': ['#humanrightsday']}, 100, Nominatim())
 
 partioner.start_streams(api.auth)
 
