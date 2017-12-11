@@ -130,3 +130,49 @@ class GeoStreamPartioner():
 
         # give up
         return None
+class GeoTweetView():
+    def __init__(self, partioned_csv, state_file, red_shp, blue_shp):
+        self.partioned_csv = partioned_csv
+        self.state_file = state_file
+        self.red_shp = red_shp
+        self.blue_shp = blue_shp
+        self.red_idx = index.Index()
+        self.blue_idx = index.Index()
+    #converts csv file into 2 shapefiles for Blue tweets and red tweets
+    def convert_csv(self):
+         newschema = {'geometry': 'Point', 'properties': {'text': 'str', 'party':'str'}}
+         with fiona.open(self.red_shp, 'w', driver="ESRI Shapefile", schema = newschema, crs = from_epsg(4296)) as red:
+             with fiona.open(self.blue_shp, 'w', driver="ESRI Shapefile", schema = newschema, crs = from_epsg(4296)) as blue:
+                 with open(self.partioned_csv, 'rb') as f:
+                     reader = csv.DictReader(f)
+                     for row in reader:
+                         if row[0] == 'Red':
+                             point = Point(float(row[2]), float(row[3]))
+                             self.red_shp.write({'properties': {'text': row[1], 'party': row[0]},'geometry': mapping(point)})
+                         elif row[0] == 'Blue':
+                             point = Point(float(row[2]), float(row[3]))
+                             self.blue_shp.write({'properties': {'text': row[1], 'party': row[0]},'geometry': mapping(point)})
+    
+    #This will create an Rtree index of the geocoded tweets
+    def populate_indices(self):
+        count = 0
+        with fiona.open(self.red_shp, 'r') as shp_input:
+            for point in shp_input:
+                self.red_idx.insert(count, Point(point['geometry']['coordinates'][0].bounds))
+                count = count + 1
+        count2 = 0
+        with fiona.open(self.blue_shp, 'r') as blue_input:
+            for point in blue_input:
+                self.blue_idx.insert(count2, Point(point['geometry']['coordinates'][0].bounds))
+    
+    #This finalizes the data structure of the shapefiles in order to display the data in a map
+    def finalize_tweets(self):
+        with fiona.open(self.state_file, 'r') as states:
+            newschema = states.schema.copy()
+            newschema['properties']['count'] = 'float'
+            with fiona.open(self.red_shp, 'r+') as red:
+                for state in red:
+                    state['properties']['count'] = self.red_idx.count(Polygon(state['geometry']['coordinates'][0].bounds))
+            with fiona.open(self.blue_shp, 'r+') as blue:
+                for state in blue:
+                    state['properties']['count'] = self.blue_idx.count(Polygon(state['geometry']['coordinates'][0].bounds))
