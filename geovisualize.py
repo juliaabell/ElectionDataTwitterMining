@@ -33,10 +33,10 @@ def populate_index(idx, name_file_in):
     with fiona.open(name_file_in, 'r') as shp_input:
         for point in shp_input:
             idx.insert(count, Polygon(point['geometry']['coordinates'][0].bounds))
+            count = count + 1
 
 #This function cleans the fiona shapefile and creates the count file                                   
 def finalize_tweets(state_set, red_set, blue_set, blue_idx, red_idx):
-    os.path.join(root, "Election_map")
     with fiona.open(state_set, 'r') as states:
         newschema = states.schema.copy()
         newschema['properties']['count'] = 'float'
