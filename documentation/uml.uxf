@@ -3,8 +3,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>152</x>
-      <y>72</y>
+      <x>184</x>
+      <y>160</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -16,27 +16,35 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>152</x>
-      <y>184</y>
+      <x>184</x>
+      <y>272</y>
       <w>232</w>
-      <h>112</h>
+      <h>176</h>
     </coordinates>
     <panel_attributes>GeoStreamListener
 --
-- partitions : [Tweet -&gt; Bool]
-- partioned_tweets : [[Tweet]]
+- tweet_collection : [Tweet]
+- tags : [String]
+- max_count : Int
+- stream # Tweepy object
 --
-- geocode_tweet(status)
-+ __init__(partitions : [Tweet -&gt; Bool])
++ __init__(tags : [String], count : Int)
 + on_status(status) # Tweepy function
-+ collect_tweets() : [[Tweet]]</panel_attributes>
++ collect_tweets() : [[Tweet]]
++ start_stream(auth)
++ disconnect_stream()
++ connected() : Bool
+
+
+
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>144</x>
-      <y>48</y>
+      <x>176</x>
+      <y>136</y>
       <w>152</w>
       <h>88</h>
     </coordinates>
@@ -47,8 +55,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>200</x>
-      <y>104</y>
+      <x>232</x>
+      <y>192</y>
       <w>24</w>
       <h>96</h>
     </coordinates>
@@ -58,22 +66,22 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>328</x>
-      <y>64</y>
+      <x>360</x>
+      <y>152</y>
       <w>144</w>
       <h>56</h>
     </coordinates>
     <panel_attributes>Tweet
 --
-- status : String
-- geo_info</panel_attributes>
+- text : String
+- coords : (Int, Int)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>296</x>
-      <y>96</y>
+      <x>328</x>
+      <y>184</y>
       <w>48</w>
       <h>104</h>
     </coordinates>
@@ -83,8 +91,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>528</x>
-      <y>72</y>
+      <x>560</x>
+      <y>160</y>
       <w>256</w>
       <h>48</h>
     </coordinates>
@@ -98,25 +106,30 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>464</x>
-      <y>192</y>
-      <w>272</w>
-      <h>80</h>
+      <x>496</x>
+      <y>280</y>
+      <w>344</w>
+      <h>168</h>
     </coordinates>
-    <panel_attributes>GeoTweetCollection
+    <panel_attributes>GeoStreamPartioner
 --
-- partioned_tweets : Dict (String -&gt; [Tweet])
-- tag_partitions: Dict (String -&gt; [String])
+- listeners : Dict String GeoStreamListner
+- geolocator
 --
-+ __init__(tag_partitions)
-+ get_partitions : Dict (String -&gt; Tweet)</panel_attributes>
++ __init__(partions : Dict String String, count : Int, geolocator)
++ start_streams(auth)
++ disconnect_steams()
++ stream_open() : Bool
++ collect_partions() : Dict String [String]
++ csv_dump(filename)
+- geocode_tweet(text)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>376</x>
-      <y>208</y>
+      <x>408</x>
+      <y>296</y>
       <w>104</w>
       <h>24</h>
     </coordinates>
@@ -126,8 +139,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>608</x>
-      <y>112</y>
+      <x>640</x>
+      <y>200</y>
       <w>24</w>
       <h>96</h>
     </coordinates>
