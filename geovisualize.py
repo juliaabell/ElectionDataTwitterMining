@@ -14,18 +14,18 @@ import csv
 
 #Makes two fiona shapefiles from the csv dataset, separating them by party
 def convert_csv(data_csv, redfile, bluefile):
-    schema = {'geometry': 'Point', 'properties': {'text':'str', 'party': 'str'}
-              with fiona.open(redfile, 'w', "ESRI Shapefile", schema) as red:
-                  with fiona.open(bluefile, 'w', "ESRI Shapefile", schema) as blue:
-                      with open(data_csv, 'rb') as f:
-                          reader = csv.DictReader(f)
-                              for row in reader:
-                                  if row[0] == 'Red':
-                                      point = Point(float(row[2]), float(row[3]))
-                                      output.write({'properties': {'text': row[1], 'party': row[0]},'geometry': mapping(point)})
-                                  elif row[0] == 'Blue':
-                                      point = Point(float(row[2]), float(row[3]))
-                                      output.write({'properties': {'text': row[1]'party': row[0},'geometry': mapping(point)})
+    newschema = {'geometry': 'Point', 'properties': {'text':'str', 'party':'str'}
+    with fiona.open(redfile, 'w', crs=from_epsg(4296) driver = "ESRI Shapefile", schema= newschema) as red:
+        with fiona.open(bluefile, 'w', crs=from_epsg(4296), driver = "ESRI Shapefile", schema=newschema) as blue:
+            with open(data_csv, 'rb') as f:
+            reader = csv.DictReader(f)
+                for row in reader:
+                    if row[0] == 'Red':
+                        point = Point(float(row[2]), float(row[3]))
+                        output.write({'properties': {'text': row[1], 'party': row[0]},'geometry': mapping(point)})
+                    elif row[0] == 'Blue':
+                        point = Point(float(row[2]), float(row[3]))
+                        output.write({'properties': {'text': row[1]'party': row[0},'geometry': mapping(point)})
 
 #This collection of functions will be able to visualize our tweet datasets and compare them to election results
 def populate_index(idx, name_file_in):
