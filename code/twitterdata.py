@@ -7,6 +7,8 @@ import fiona
 from fiona.crs import from_epsg
 import pandas
 import geopandas as gdp
+import matplotlib.pyplot as plt
+import matplotlib as mpl
 # from shapely.geometry.point import Point
 
 class Tweet():
