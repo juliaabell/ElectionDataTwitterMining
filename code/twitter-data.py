@@ -1,5 +1,5 @@
 import tweepy
-import csv
+import csv 
 import re
 
 import geograpy
@@ -137,11 +137,18 @@ auth.set_access_token(access_token, access_secret)
 
 api = tweepy.API(auth)
  
-partioner = GeoStreamPartioner({'Blue': ['#ManchesterDerby'], 'Red': ['#humanrightsday']}, 100, Nominatim())
+with open('blue_tags.txt') as f:
+    blue_tags = [l.strip() for l in f.readlines()]
+
+with open('red_tags.txt') as f:
+    red_tags = [l.strip() for l in f.readlines()]
+
+partioner = GeoStreamPartioner({'Blue': blue_tags,
+                                'Red': red_tags}, 5, Nominatim())
 
 partioner.start_streams(api.auth)
 
 while(partioner.stream_open()):
     sleep(1)
 
-partioner.csv_dump('tweet_dump.csv')
+partioner.csv_dump('political_tweets.csv')
