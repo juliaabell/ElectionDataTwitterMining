@@ -1,11 +1,8 @@
 import tweepy
 import csv 
 import re
-
 import geograpy
-from geopy.geocoders import Nominatim
 
-from time import sleep
 # from shapely.geometry.point import Point
 
 class Tweet():
@@ -81,34 +78,41 @@ class GeoStreamPartioner():
         for k in self._listeners:
             self._listeners[k].disconnect_stream()
 
-    def collect_partions(self):
-        return {k : v.collect_tweets() for k, v in self._listeners.iteritems()}
-
-    def csv_dump(self, filename):
-        print 'started geotaggin'
-        with open(filename, 'wb') as tweet_file:
-            writer = csv.writer(tweet_file)#, quoting=csv.QUOTE_NONNUMERIC)
-            regex = re.compile(r'\s+')
-            for name, tweets in self.collect_partions().iteritems():
-                for tweet in tweets:
-                    text = regex.sub(' ', tweet.text.encode('ascii', 'replace'))
-
-                    if tweet.coords is None:
-                        coords = self._geocode_tweet(text)
-                        print 'coded', coords
-                    else:
-                        coords = tweet.coords
-                        print 'place', coords
-
-                    if coords is not None:
-                        writer.writerow([name, text, coords[0], coords[1]])
-
     def stream_open(self):  
         r = False
         for k in self._listeners:
             c = self._listeners[k].connected()
             r = r or c
         return r
+
+    # Geocoding is done when the user collects the partions because the process
+    # is to slow to do while connected to the twitter API. Attempting to do that
+    # casused the twitter API to time out.
+    def collect_partions(self):
+        coded_partions = {}
+        for name,listener in self._listeners.iteritems():
+
+            partion = []
+            regex = re.compile(r'\s+')
+            for tweet in listener.collect_tweets():
+                text = regex.sub(' ', tweet.text.encode('ascii', 'replace'))
+                if tweet.coords is None:
+                    coords = self._geocode_tweet(text)
+                else:
+                    corrds = tweet.coords
+                if coords is not None:
+                    partion.append(Tweet(text, coords))
+
+            coded_partions[name] = partion
+
+        return coded_partions
+
+    def csv_dump(self, filename):
+        with open(filename, 'wb') as tweet_file:
+            writer = csv.writer(tweet_file)#, quoting=csv.QUOTE_NONNUMERIC)
+            for name, tweets in self.collect_partions().iteritems():
+                for tweet in tweets:
+                    writer.writerow([name, tweet.text, tweet.coords[0], tweet.coords[1]])
 
     def _geocode_tweet(self, text):
         # Try to use geograpy + geopy to guess at location
@@ -126,29 +130,3 @@ class GeoStreamPartioner():
 
         # give up
         return None
-
-consumer_key = 'qXFcavM2ZXwduSzUn5dlpE2XH'
-consumer_secret = 'fhABJUgf0dJ5bCwvLtrnry5bKggRAEgqf71OQgLgQYq4ueDKOE'
-access_token = '935886161217839104-p3rzIm3HfvhaE0THUQSf7hAfDVjIvJ2'
-access_secret = '8E9tKooQeydsZwhuuFWuuoHJlS57oOyGShuhqy5323TgC'
-
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_secret)
-
-api = tweepy.API(auth)
- 
-with open('blue_tags.txt') as f:
-    blue_tags = [l.strip() for l in f.readlines()]
-
-with open('red_tags.txt') as f:
-    red_tags = [l.strip() for l in f.readlines()]
-
-partioner = GeoStreamPartioner({'Blue': blue_tags,
-                                'Red': red_tags}, 5, Nominatim())
-
-partioner.start_streams(api.auth)
-
-while(partioner.stream_open()):
-    sleep(1)
-
-partioner.csv_dump('political_tweets.csv')
