@@ -3,8 +3,8 @@ import csv
 import re
 import geograpy
 
-# from shapely.geometry.point import Point
 
+#Encodes the basic information for a tweet, text and possibly location
 class Tweet():
     def __str__(self):
         return str(self.__dict__)
@@ -21,6 +21,10 @@ class Tweet():
     def coords(self):
       return self._coords
 
+# Each GeoStreamListener is responsible for listening for a set of selected
+# hastags through the twitter API. When a matching tweet is encountered, 
+# it is added to a collection of matching tweets. This collection can be retreived
+# by a call to collect_tweets
 class GeoStreamListener(tweepy.StreamListener):
     def __init__(self, tags, count):
         super(GeoStreamListener, self).__init__()
@@ -32,7 +36,6 @@ class GeoStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         if len(self._tweet_collection) < self._max_count:
             if status.place is not None:
-                print 'found geotagged tweet'
                 tweet = Tweet(status.text, status.place.bounding_box.corner())
             else:
                 tweet = Tweet(status.text, None)
@@ -44,21 +47,26 @@ class GeoStreamListener(tweepy.StreamListener):
         else:
             self.disconnect_stream()
 
+    # Retreive all matching tweets found so far
     def collect_tweets(self):
         return self._tweet_collection
 
+    # Initiate the stream listener. This method must be called to populate the list of tweets.
     def start_stream(self, auth):
         if self._stream is not None:
             raise Exception('Stream already exists for this listener object!')
         self._stream = tweepy.Stream(auth = auth, listener = self)
         self._stream.filter(track=self._tags, async=True)
 
+    # Severs the connnection with the twitter API. This method is called automatically
+    # after max_count tweets is reached but can be called prematurely.
     def disconnect_stream(self):
         if self._stream is None:
             raise Exception('No stream exists for this listener object!')
         self._stream.disconnect()
         self._stream = None
 
+    # check the status of the stream this listeners listens to
     def connected(self):
         return self._stream is not None
 
@@ -89,6 +97,7 @@ class GeoStreamPartioner():
     # is to slow to do while connected to the twitter API. Attempting to do that
     # casused the twitter API to time out.
     def collect_partions(self):
+
         coded_partions = {}
         for name,listener in self._listeners.iteritems():
 
@@ -100,6 +109,7 @@ class GeoStreamPartioner():
                     coords = self._geocode_tweet(text)
                 else:
                     corrds = tweet.coords
+
                 if coords is not None:
                     partion.append(Tweet(text, coords))
 

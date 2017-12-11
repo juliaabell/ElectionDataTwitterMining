@@ -2,6 +2,10 @@ from twitterdata import GeoStreamPartioner
 from geopy.geocoders import Nominatim
 from time import sleep
 import tweepy
+import sys
+
+# Call as With:
+# python main.py count csv
 
 consumer_key = 'qXFcavM2ZXwduSzUn5dlpE2XH'
 consumer_secret = 'fhABJUgf0dJ5bCwvLtrnry5bKggRAEgqf71OQgLgQYq4ueDKOE'
@@ -20,11 +24,11 @@ with open('red_tags.txt') as f:
     red_tags = [l.strip() for l in f.readlines()]
 
 partioner = GeoStreamPartioner({'Blue': blue_tags,
-                                'Red': red_tags}, 10, Nominatim())
+                                'Red': red_tags}, int(sys.argv[1]), Nominatim())
 
 partioner.start_streams(api.auth)
 
 while(partioner.stream_open()):
     sleep(1)
 
-partioner.csv_dump('political_tweets.csv')
+partioner.csv_dump(sys.argv[2])
