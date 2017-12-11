@@ -5,6 +5,8 @@ import geograpy
 from shapely.geometry import Point, mapping
 import fiona
 from fiona.crs import from_epsg
+import pandas
+import geopandas as gdp
 # from shapely.geometry.point import Point
 
 class Tweet():
@@ -178,3 +180,10 @@ class GeoTweetView():
             with fiona.open(self.blue_shp, 'r+') as blue:
                 for state in blue:
                     state['properties']['count'] = self.blue_idx.count(Polygon(state['geometry']['coordinates'][0].bounds))
+    
+    def display_tweets(self):
+        query_box = [-168.6,16.4,-66.5,71.5]
+        redtweets = gpd.read_file(self.red_shp)
+        redtweets.plot(column = 'count', cmap = 'Reds', scheme = 'quantiles')
+        bluetweets = gpd.read_file(self.blue_shp)
+        bluetweets.plot(column = 'count', cmap = 'Blues', scheme = 'quantiles')
