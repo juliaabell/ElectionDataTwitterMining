@@ -55,13 +55,13 @@ The visualization portion of this project will edit the .csv file, turning the p
 
 Tweepy is a python library used for accessing the twitter API. This will allow us to scrape the information that we want from Twitter. From  Tweepy, we will use StreamListener which will allow us to access the tweets and download them.
 
-Tweet will contain the tweets that have been downloaded from twitter via the Tweepy module. Each tweet will have a status which is the string/words in the tweet (including the hashtag, which is what we are most interested in), as well as geographic information about where the tweet originated. 
+Tweet will contain the tweets that have been downloaded from twitter via the Tweepy module. Each tweet will have a status which is the string/words in the tweet (including the hashtag, which is what we are most interested in), as well as geographic information about where the tweet originated (if the user has enabaled that option). 
 
-GeoStreamListener is composed of these tweets and allows us to obtain the geographic location of where the tweet was created to create a geodataset of tweets. 
+GeoStreamListener is composed of these tweets that are obtained from the webscraper that contain the desired hashtags. This class allows us to specify the number of tweets that we want, as well as which hashtags we want to use, and the affiliation (red or blue) that each hashtag posseses. 
 
-GeoTweetCollection is composed of the partitioned tweets and the tweets that have been geotagged so we can determine where they were created. Any tweets that we haved ownloaded that cannot be tagged will be dropped from this dataset as we need location for this project.
+GeoStreamPartitioner  is composed of the partitioned tweets and the tweets that have been geotagged so we can determine where they were created. Any tweets that we haved ownloaded that cannot be tagged will be dropped from this dataset as we need location for this project. We do, however, has a geoactor that will allow some of the untagged tweets to be geocoded based on location words that are used in said tweets. The coordinates of these tweets will them be added to a CSV dump file, which we can use in the visualization process. 
 
-GeoTweetView will take the location of the selected tweets and display them in their correct location on a map of the U.S. This map will be partitioned by state, so we can easily see which state each tweet came from. This graphic can be used to compare the political affilition of each state with the tweets that are being tweeted by its citizens. 
+GeoTweetView will take the location of the selected tweets and display them in their correct location on a map of the U.S. This map will be partitioned by state, so we can easily see which state each tweet came from. This will then create a chloropleth map, based on whether each state has more "red" or "blue" tweets. This graphic can be used to compare the political affilition of each state from the 2016 election, with the tweets that are currently being tweeted by its citizens. 
 
 
 ## Project Input & Output
