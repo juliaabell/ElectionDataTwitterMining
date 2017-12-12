@@ -2,14 +2,14 @@ import tweepy
 import csv 
 import re
 import geograpy
-from shapely.geometry import Point, mapping
+from shapely.geometry import Point, mapping, Polygon
 import fiona
 from fiona.crs import from_epsg
 import pandas
-import geopandas as gdp
+import geopandas as gpd
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-# from shapely.geometry.point import Point
+from rtree import index
 
 class Tweet():
     def __str__(self):
@@ -136,7 +136,9 @@ class GeoStreamPartioner():
 
         # give up
         return None
+
 class GeoTweetView():
+
     def __init__(self, partioned_csv, state_file, red_shp, blue_shp):
         self.partioned_csv = partioned_csv
         self.state_file = state_file
@@ -144,47 +146,66 @@ class GeoTweetView():
         self.blue_shp = blue_shp
         self.red_idx = index.Index()
         self.blue_idx = index.Index()
+
     #converts csv file into 2 shapefiles for Blue tweets and red tweets
     def convert_csv(self):
          newschema = {'geometry': 'Point', 'properties': {'text': 'str', 'party':'str'}}
          with fiona.open(self.red_shp, 'w', driver="ESRI Shapefile", schema = newschema, crs = from_epsg(4296)) as red:
              with fiona.open(self.blue_shp, 'w', driver="ESRI Shapefile", schema = newschema, crs = from_epsg(4296)) as blue:
                  with open(self.partioned_csv, 'rb') as f:
-                     reader = csv.DictReader(f)
+                     reader = csv.reader(f)#csv.DictReader(f)
                      for row in reader:
                          if row[0] == 'Red':
                              point = Point(float(row[2]), float(row[3]))
-                             self.red_shp.write({'properties': {'text': row[1], 'party': row[0]},'geometry': mapping(point)})
+                             red.write({'properties': {'text': row[1], 'party': row[0]},'geometry': mapping(point)})
                          elif row[0] == 'Blue':
                              point = Point(float(row[2]), float(row[3]))
-                             self.blue_shp.write({'properties': {'text': row[1], 'party': row[0]},'geometry': mapping(point)})
+                             blue.write({'properties': {'text': row[1], 'party': row[0]},'geometry': mapping(point)})
     
     #This will create an Rtree index of the geocoded tweets
     def populate_indices(self):
         count = 0
         with fiona.open(self.red_shp, 'r') as shp_input:
             for point in shp_input:
-                self.red_idx.insert(count, Point(point['geometry']['coordinates'][0].bounds))
+                self.red_idx.insert(count, point['geometry']['coordinates'])
                 count = count + 1
         count2 = 0
         with fiona.open(self.blue_shp, 'r') as blue_input:
             for point in blue_input:
-                self.blue_idx.insert(count2, Point(point['geometry']['coordinates'][0].bounds))
+                self.blue_idx.insert(count2, point['geometry']['coordinates'])
     
     #This finalizes the data structure of the shapefiles in order to display the data in a map
     def finalize_tweets(self):
         with fiona.open(self.state_file, 'r') as states:
             newschema = states.schema.copy()
-            newschema['properties']['count'] = 'float'
-            with fiona.open(self.red_shp, 'r+') as red:
-                for state in red:
-                    state['properties']['count'] = self.red_idx.count(Polygon(state['geometry']['coordinates'][0].bounds))
-            with fiona.open(self.blue_shp, 'r+') as blue:
-                for state in blue:
-                    state['properties']['count'] = self.blue_idx.count(Polygon(state['geometry']['coordinates'][0].bounds))
-    
+            newschema['properties']['blue_count'] = 'float'
+            newschema['properties']['red_count'] = 'float'
+
+            with fiona.open(self.state_file + '.new', 'w', driver="ESRI Shapefile", schema = newschema, crs = from_epsg(4296)) as new_state:
+                    for state in states:
+
+                        min_x = min(map(lambda c: c[0], get_list(state['geometry']['coordinates'])))
+                        min_y = min(map(lambda c: c[1], get_list(state['geometry']['coordinates'])))
+
+                        max_x = max(map(lambda c: c[0], get_list(state['geometry']['coordinates'])))
+                        max_y = max(map(lambda c: c[1], get_list(state['geometry']['coordinates'])))
+
+                        state['properties']['red_count'] = self.red_idx.count([min_x,min_y,max_x,max_y])
+                        state['properties']['blue_count'] = self.blue_idx.count([min_x,min_y,max_x,max_y])
+                        new_state.write(state)
+                        
+        
     def display_tweets(self):
-        redtweets = gpd.read_file(self.red_shp)
-        redtweets.plot(column = 'count', cmap = 'Reds', scheme = 'quantiles')
-        bluetweets = gpd.read_file(self.blue_shp)
-        bluetweets.plot(column = 'count', cmap = 'Blues', scheme = 'quantiles')
+        query_box = [-168.6,16.4,-66.5,71.5]
+        stateplot = gpd.read_file(self.state_file)
+        stateplot.plot( cmap = 'Reds', scheme = 'quantiles')
+        stateplot.plot( cmap = 'Blues', scheme = 'quantiles')
+        plt.show()
+
+def get_list(lst):
+    if not isinstance(lst, list):
+        return None
+    elif get_list(lst[0]) is not None:
+        return get_list(lst[0])
+    else:
+        return lst
