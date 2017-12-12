@@ -76,5 +76,6 @@ With these two inputs, we are able to create our output:
 
 * A corrected geodataset of tweets in .csv form called political_tweets.csv (All tweets that could not be tagged will be deleted).
 * Geovisualization of data using shapely, fiona, and geopandas
-
+![Blue Tweets per State](/blue.png)
+![Red Tweets per State](/red.png)
 
