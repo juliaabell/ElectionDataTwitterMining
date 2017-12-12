@@ -33,15 +33,19 @@ Before being able to search through the tweets that we want, we must first get a
 
 ### tweepy Stream and tweepy.search
 
-The tweepy module has the capability to stream tweets and produce a JSON dataset that includes several parameters. This can be used to return data for tweets including the partisan hashtags provided as input. The data returned through tweepy stream will be used in the rest of our analysis. While just a regular stream will return all available tweets for a certain time, we need something more specific for our hashtags. The tweepy module provides a search function which will help us narrow down tweets that contain one of the hashtags within their text. The search function requires an input of the string (hashtag) we are looking for, as well as a specification of how many tweets we should return. This will be how our initial dataset will be created, the next step is geocoding ungeotagged tweets.
+The tweepy module has the capability to stream tweets and produce a JSON dataset that includes several parameters. This can be used to return data for tweets including the partisan hashtags provided as input. The data returned through tweepy stream will be used in the rest of our analysis. While just a regular stream will return all available tweets for a certain time, we need something more specific for our hashtags. The tweepy module provides a search function which will help us narrow down tweets that contain one of the hashtags within their text. The search function requires an input of the string (hashtag) we are looking for, as well as a specification of how many tweets we should return. This will be how our initial dataset will be created, the next step is geocoding ungeotagged tweets. For a more easily readable dataset, the JSON is converted into a .csv file.
 
-### tweepy.text and Geotagging Function
+## Geocoding and Visualization
+
+### Using Tweet Text for Geocoding
 
 A tweet is geotagged only when a user allows it to be, therefore many tweets do not have latitude and longitude coordinates already. After we have retrieved tweets using both functions, the dataset will have to geotag as many of the untagged tweets as possible. Fortunately, it is possible to analyze individual tweets within the JSON dataset created by using the text function of tweepy, which returns the text of the tweet as a string object. Our code will use the text of each tweet and create a place and coordinate dictionary that will search tweets for text that indicates a location, and then populating a coordinate field with lat lon coordinates that correspond to the written location within the tweet. This will help to create more robust geospatial datasets derived from twitter and increase the sample size of our analysis of partisan hashtags.
 
-### Geovisualization of Data
+To realize this function, we used the [**geograpy**](https://pypi.python.org/pypi/geograpy) library, which uses NLTK place name tokens to parse a string and create a list of all things that correspond to place in the script. The next step is using these placenames to geocode the tweets to specific coordinates. To do this we used [**geopy**](https://pypi.python.org/pypi/geopy) to give us access to the Nomanatim geocoder provided by Open Street Map. For each tweet, lat/lon coordinates will be added to the .csv file.
 
-Our code will aim to create a visualization of the data in the form of a map showing the dispersion of partisan tweets by geographic location. These maps will be created using the basemap functionality of matplotlib, and will be an important utilization of the geographic data that has been created in the other parts of our code.
+### Visualization of Data
+
+The visualization portion of this project will edit the .csv file, turning the partitioned tweets into two shapefiles, one for right-leaning hashtags and the other for left-leaning hashtags. In order to display these shapefiles, a count is taken for the amount of states in each boundary. The GeoPandas library is used to make chloropleth maps that show the concentration of partisan tweets within each state. 
 
 ## UML Diagram and Implementation
 
@@ -67,8 +71,7 @@ As a whole our project seeks to analyze partisan sentiment on twitter by using t
 
 With these two inputs, we will be able to create our output:
 
-* A corrected geodataset of tweets (All those that could not be tagged will be deleted).
-* Geovisualization of data using shapely, matplotlib, and basemap.
-* Comparison of twitter data to 2016 election maps for user analysis.
+* A corrected geodataset of tweets in .csv form(All those that could not be tagged will be deleted).
+* Geovisualization of data using shapely, fiona, and geopandas
 
 
