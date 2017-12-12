@@ -196,10 +196,10 @@ class GeoTweetView():
                         
         
     def display_tweets(self):
-        query_box = [-168.6,16.4,-66.5,71.5]
-        stateplot = gpd.read_file(self.state_file)
-        stateplot.plot( cmap = 'Reds', scheme = 'quantiles')
-        stateplot.plot( cmap = 'Blues', scheme = 'quantiles')
+#        query_box = [-168.6,16.4,-66.5,71.5]
+        stateplot = gpd.read_file(self.state_file + '.new')
+        stateplot.plot(column = 'red_count', cmap = 'Reds', scheme = 'quantiles')
+        stateplot.plot(column = 'blue_count',  cmap = 'Blues', scheme = 'quantiles')
         plt.show()
 
 def get_list(lst):
