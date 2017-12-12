@@ -184,7 +184,6 @@ class GeoTweetView():
                     state['properties']['count'] = self.blue_idx.count(Polygon(state['geometry']['coordinates'][0].bounds))
     
     def display_tweets(self):
-        query_box = [-168.6,16.4,-66.5,71.5]
         redtweets = gpd.read_file(self.red_shp)
         redtweets.plot(column = 'count', cmap = 'Reds', scheme = 'quantiles')
         bluetweets = gpd.read_file(self.blue_shp)
