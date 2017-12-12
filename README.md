@@ -69,11 +69,12 @@ GeoTweetView will take the location of the selected tweets and display them in t
 As a whole our project seeks to analyze partisan sentiment on twitter by using the geospatial data that is retrievable through the twitter API. In order to create our final product, we require some input:
 
 * Twitter API Authorization token
-* List of hashtags to be used (#Hillaryforprison, #LoveTrumpsHate, #NotMyPresident, #PresidentTrump, #PresidentClinton, #MakeAmericaGreatAgain/#MAGA)
+* List of hashtags to be used: Blue(#lovetrumpshate, #hillaryclinton, #obama, #resist, #trumprussia, #impeachtrump, #trumpconspired,
+#TraitorTrump), Red(#makeamericagreatagain, #trump, #maga, #republican, #liberaltears, #killaryforprison, #hillaryforprison, #buildthewall)
 
-With these two inputs, we will be able to create our output:
+With these two inputs, we are able to create our output:
 
-* A corrected geodataset of tweets in .csv form(All those that could not be tagged will be deleted).
+* A corrected geodataset of tweets in .csv form called political_tweets.csv (All tweets that could not be tagged will be deleted).
 * Geovisualization of data using shapely, fiona, and geopandas
 
 
